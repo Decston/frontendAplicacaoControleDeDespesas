@@ -37,6 +37,7 @@ export default function ativos( state = INITIAL_STATE, action ) {
             editID: action.id
         };
     } else if(action.type === 'DELETE_ACTIVE') {
+        console.log("3 - deleteReducer");
         let index = state.ativos.indexOf(action.ativo);
         state.ativos.splice(index, 1); 
         return {

@@ -6,8 +6,9 @@ export function editarAtivo(id) {
 }
 
 export function deletarAtivo(ativo) {
+    console.log("1 - deleteAction");
     return {
-        type: 'DELETE_ACTIVE',
+        type: 'ASYNC_DELETE_ACTIVE',
         ativo
     }
 }
