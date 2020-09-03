@@ -11,11 +11,11 @@ function App() {
     <div>
       <Provider store={store}>
         <div className="App">
-          <Link to="/">Home </Link>
+          <Link to="/"> Home </Link>
           - 
           <Link to="/ativos"> Ativos </Link>
           -
-          <Link to="/passivos"> Passivos</Link>     
+          <Link to="/passivos"> Passivos </Link>   
         </div>
         <div className="pages">
           {routesConfig.map((value, key) => {

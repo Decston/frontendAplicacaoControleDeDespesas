@@ -1,40 +1,33 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 import * as PassivosActions from '../../store/actions/passivos';
+import CadastroForm from '../../components/Form';
+import FormEditar from '../../components/FormEditar';
+import TableAtivo from '../../components/TableGastos';
 
-const Passivos = ({ estado, editarPassivo, deletarPassivo }) => (
-    <div>
-        <h2>Passivos</h2>
-        <table border="1">
-            <thead>
-                <tr><td>Data</td><td>Descricao</td><td>Taxa</td><td>Valor</td><td>Destino</td><td>Tipo</td><td>Edite</td><td>Delete</td></tr>
-            </thead>
-            <tbody>
-                {estado.passivos.map(passivo => {
-                        return(
-                            <tr key={passivo.id}>
-                                <td>{passivo.data}</td>
-                                <td>{passivo.descricao}</td>
-                                <td>{passivo.taxa}</td>
-                                <td>{passivo.valor}</td>
-                                <td>{passivo.destino}</td>
-                                <td>{passivo.tipo}</td>
-                                <td><button onClick={() => editarPassivo(passivo)}>Editar</button></td>
-                                <td><button onClick={() => deletarPassivo(passivo)}>Deletar</button></td>
-                            </tr> 
-                        );
-                })}
-            </tbody>
-            <tfoot>
-                <tr>
-                    <td>Passivos</td>
-                </tr>
-            </tfoot>
-        </table>
-    </div>
-);
+function Passivos({ estado }) {
+    const [editing, setEditing] = useState(false);
+
+    useEffect(() => {
+        setEditing(estado.editing);
+    },[estado.editing]);
+
+    return(
+        <>
+            <div>
+                {editing ? (
+                    <FormEditar tipo="Passivo" />    
+                ):(
+                    <CadastroForm tipo="Passivo" />
+                )}
+
+                <TableAtivo tipo="Passivos" />
+            </div>
+        </>
+    );
+}
 
 const mapStateToProps = state => ({
     estado: state.passivos
