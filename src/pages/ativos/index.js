@@ -18,7 +18,7 @@ function Ativos({ estado }) {
         <>
             <div>
                 {editing ? (
-                    <FormEditar tipo="Ativo" />    
+                    <FormEditar tipo="Ativo" editando={editing} />    
                 ):(
                     <CadastroForm tipo="Ativo" />
                 )}

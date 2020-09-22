@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const INITIAL_STATE = {
     ativos: [],
     ativoEdit: {},
@@ -9,8 +7,7 @@ const INITIAL_STATE = {
 
 export default function ativos( state = INITIAL_STATE, action ) {
     if(action.type === 'EDIT_ACTIVE') {
-        console.log('3 - editAtivoReduce');
-
+        
         return {
             ...state,
             idEdit: action.id,
@@ -18,24 +15,10 @@ export default function ativos( state = INITIAL_STATE, action ) {
             editing: true
         }
 
-    } else if(action.type === 'DELETE_ACTIVE') {
+    } else if(action.type === 'DELETA_ATIVO') {
 
-        console.log('3 - deleteAtivoReduce');
+        state.ativos.splice(action.id, 1);
 
-        fetch('http://localhost:8080/api/gasto', {
-            method: 'DELETE',
-            body: JSON.stringify(action.ativo),
-            headers: {
-                'Content-type': 'application/json;' 
-            }
-        })
-        .then (function(response) {
-            return response.ok;
-        })
-
-        let index = state.ativos.indexOf(action.ativo);
-        state.ativos.splice(index, 1);        
-        
         return {
             ...state,
             ativos: state.ativos,
@@ -43,51 +26,45 @@ export default function ativos( state = INITIAL_STATE, action ) {
         }
 
     } else if(action.type === 'SAVE_ACTIVE') {
-
+        
         if(state.editing === false) {
 
-            console.log('3 - saveAtivoReduce');
-
-            axios.post('http://localhost:8080/api/gasto', action.ativo)
-            .then((response) => {
-                
-            });
-
-            const newAtivo = { id: Math.round(Math.random()*100), ...action.ativo};
-            state.ativos.push(newAtivo);
+            const ativos = [...state.ativos, action.ativo];
             
             return {
                 ...state,
-                ativos: state.ativos,
+                ativos
             }
 
-        } else {
-
-            console.log('Editando...');
-
-            state.ativos.splice(state.idEdit, 1, action.ativo );
-
-            axios.put('http://localhost:8080/api/gasto', action.ativo)
-            .then((response) => {
-                console.log(response.ok);    
-            });
-
-            return {
-                ...state,
-                ativos: state.ativos,
-                idEdit: null,
-                editing: false
-            }
-
-        }
+        } 
 
     } else if(action.type === 'LOADED_ATIVOS') {
-        console.log('reduceLoadAtivos');
 
         return {
             ...state,
             ativos: action.ativos
         }
+        
+    } else if(action.type === 'UPDATE_EDIT_ATIVO') {
+
+        state.ativos.splice(state.idEdit, 1, action.ativo);
+
+        return {
+            ...state,
+            ativos: state.ativos,
+            idEdit: null,
+            editing: false
+        }
+
+    } else if(action.type === 'CANCELAR_ATIVO') {
+
+        return {
+            ...state,
+            idEdit: null,
+            editing: false,
+            ativoEdit: {}
+        }
+
     }
 
     return state;

@@ -3,6 +3,7 @@ import { Link, Route } from 'react-router-dom';
 import routesConfig from './routesConfig';
 import { Provider } from 'react-redux';
 
+import 'antd/dist/antd.css';
 import store from './store';
 import './App.css';
 
@@ -10,12 +11,12 @@ function App() {
   return (
     <div>
       <Provider store={store}>
-        <div className="App">
+        <div className="menu">
           <Link to="/"> Home </Link>
-          - 
+          -
           <Link to="/ativos"> Ativos </Link>
           -
-          <Link to="/passivos"> Passivos </Link>   
+          <Link to="/passivos"> Passivos </Link>
         </div>
         <div className="pages">
           {routesConfig.map((value, key) => {

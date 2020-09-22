@@ -1,5 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
+import { Table } from 'antd';
 
 import {editarAtivo} from '../store/actions/ativos';
 import {deletarAtivo} from '../store/actions/ativos';
@@ -9,9 +10,6 @@ import {loadAtivos} from '../store/actions/ativos';
 import {loadPassivos} from '../store/actions/passivos';
 
 const TableGastos = ({ estado, tipo, editarAtivo, deletarAtivo, editarPassivo, deletarPassivo, loadAtivos, loadPassivos }) => {
-    //const [varGastos, setVarGastos] = useState([]);
-    //const [funcEditar, setFuncEditar] = useState();
-    //const [funcDeletar, seFunctDeletar] = useState();
 
     useEffect(() => {
         if(tipo === "Ativos") {
@@ -28,54 +26,90 @@ const TableGastos = ({ estado, tipo, editarAtivo, deletarAtivo, editarPassivo, d
         gastos = estado.ativos.ativos;
         edit = editarAtivo;
         del = deletarAtivo;
-      } else {
+    }else  if(tipo === "Passivos") {
         gastos = estado.passivos.passivos;
         edit = editarPassivo;
         del = deletarPassivo;
-      }
-    
-    function convertEmReal(valor) {
-        return valor.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' });
     }
+
+    const columns = [
+        {
+            title: 'Data',
+            width: 100,
+            dataIndex: 'data',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Descrição',
+            width: 100,
+            dataIndex: 'descricao',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Taxa',
+            width: 100,
+            dataIndex: 'taxa',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Valor (R$)',
+            width: 100,
+            dataIndex: 'valor',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Destino',
+            width: 100,
+            dataIndex: 'destino',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Tipo',
+            width: 100,
+            dataIndex: 'tipo',
+            key: 'id',
+            fixed: 'left',
+        },
+        {
+            title: 'Editar',
+            dataIndex: 'editar',
+            key: 'id',
+            fixed: 'right',
+            width: 100,
+            render: (_, record, rowIndex) =>  <button onClick={() => edit(record, rowIndex)}>Editar</button>,
+        },
+        {
+            title: 'Deletar',
+            dataIndex: 'deletar',
+            key: 'id',
+            fixed: 'right',
+            width: 100,
+            render: (_,record, rowIndex) =>  <button onClick={() => del(record, rowIndex)}>Deletar</button>,
+        },
+    ];
+
+    let data = [];
+    gastos.forEach(gasto => {
+        data.push({
+            key: gasto.id,
+            data: gasto.data,
+            descricao: gasto.descricao,
+            taxa: gasto.taxa,
+            valor: gasto.valor,
+            destino: gasto.destino,
+            tipo: gasto.tipo,
+        });
+    });
 
     return (
         <div>
             <h2> Tabela de {tipo}</h2>
-                <table border="1">
-                    <thead>
-                        <tr>
-                            <td>Data</td>
-                            <td>Descricao</td>
-                            <td>Taxa</td>
-                            <td>Valor</td>
-                            <td>Destino</td>
-                            <td>Tipo</td>
-                            <td>Edite</td>
-                            <td>Delete</td>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {gastos.map(ativo => {
-                            return(
-                                <tr key={ativo.id}>
-                                    <td>{ativo.data}</td>
-                                    <td>{ativo.descricao}</td>
-                                    <td>{ativo.taxa}</td>
-                                    <td>{convertEmReal(ativo.valor)}</td>
-                                    <td>{ativo.destino}</td>
-                                    <td>{ativo.tipo}</td>
-                                    <td><button onClick={() => edit(ativo, gastos.indexOf(ativo))}>Editar</button></td>
-                                    <td><button onClick={() => del(ativo)}>Deletar</button></td>
-                                </tr> 
-                            );
-                        })}
-                    </tbody>
-                    <tfoot>
-                        <tr>
-                            <td>Ativos</td>
-                        </tr>
-                    </tfoot>
-                </table>
+            <Table columns={columns} dataSource={data} />
         </div>
     );
 }

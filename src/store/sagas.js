@@ -1,4 +1,31 @@
-import { put, takeEvery, takeLatest, call } from 'redux-saga/effects';
+import { put, takeLatest, call } from 'redux-saga/effects';
+
+//Funções para requisição para API
+async function enviaSaveAtivo(ativo) {
+    const resposta = await fetch('http://localhost:8080/api/gasto', {
+        method: 'POST',
+        body: JSON.stringify(ativo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
+    });
+    const gasto = await resposta.json();
+
+    return gasto;
+}
+
+async function enviaSavePassivo(passivo) {
+    const resposta = await fetch('http://localhost:8080/api/gasto', {
+        method: 'POST',
+        body: JSON.stringify(passivo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
+    });
+    const gasto = await resposta.json();
+
+    return gasto;
+}
 
 async function buscaAtivos() {
     const response = await fetch('http://localhost:8080/api/gastos');
@@ -20,62 +47,181 @@ async function buscaPassivos() {
     return passivos;
 }
 
-//ACTIONS ATIVOS
-function* asyncDeleteActive(action) {
-    console.log('2 - deleteAtivoSaga');
-    yield put({
-        type: 'DELETE_ACTIVE',
-        ativo: action.gasto
-    })
+async function enviaEditAtivo(ativo) {
+    const resposta = await fetch('http://localhost:8080/api/gasto', {
+        method: 'PUT',
+        body: JSON.stringify(ativo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
+    });
+    const gasto = await resposta.json();
+
+    return gasto;
 }
 
-function* asyncEditActive(action) {
-    console.log('2 - editAtivoSaga');
-    yield put({
-        type: 'EDIT_ACTIVE',
-        ativo: action.ativo,
-        id: action.id
-    })
+async function enviaEditPassivo(passivo) {
+    const resposta = await fetch('http://localhost:8080/api/gasto', {
+        method: 'PUT',
+        body: JSON.stringify(passivo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
+    });
+    const gasto = await resposta.json();
+
+    return gasto;
 }
 
-function* asyncSaveActive(action) {
-    console.log('2 - saveAtivoSaga');
-    yield put({
-        type: 'SAVE_ACTIVE',
-        ativo: action.ativo
+async function enviaDeleteAtivo(ativo) {
+    const resposta = fetch('http://localhost:8080/api/gasto', {
+        method: 'DELETE',
+        body: JSON.stringify(ativo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
     })
+    const gasto = await (await resposta).ok;
+
+    return gasto;
 }
 
-//ACTIONS PASSIVOS
-function* asyncDeletePassive(action) {
-    console.log('2 - deletePassivoSaga');
-    yield put({
-        type: 'DELETE_PASSIVE',
-        passivo: action.passivo
+async function enviaDeletePassivo(passivo) {
+    const resposta = fetch('http://localhost:8080/api/gasto', {
+        method: 'DELETE',
+        body: JSON.stringify(passivo),
+        headers: {
+            'Content-type': 'application/json;' 
+        }
     })
+    const gasto = await (await resposta).ok;
+
+    return gasto;
 }
 
-function* asyncEditPassive(action) {
-    console.log('2 - editPassivoSaga');
-    yield put({
-        type: 'EDIT_PASSIVE',
-        passivo: action.passivo,
-        id: action.id
-    })
+//Salva um Ativo no Banco.
+function* saveAtivo(action) {
+    try {
+        const ativo = yield call(enviaSaveAtivo,action.ativo);
+
+        yield put({
+            type: 'SAVE_ACTIVE',
+            ativo: ativo
+        })
+    } catch (err) {
+        yield put({
+            type: 'SAVE_ATIVO_FAIL',
+            message: err.message
+        })
+    }
 }
 
-function* asyncSavePassive(action) {
-    console.log('2 - savePassivoSaga');
-    yield put({
-        type: 'SAVE_PASSIVE',
-        passivo: action.passivo
-    })
+//Salva um Passivo no Banco.
+function* savePassivo(action) {
+    try {
+        const passivo = yield call(enviaSavePassivo, action.passivo);
+
+        yield put({
+            type: 'SAVE_PASSIVE',
+            passivo
+        })
+    } catch (err) {
+        yield put({
+            type: 'SAVE_PASSIVO_FAIL',
+            message: err.message
+        })
+    }
 }
 
-//GASTOS
+//Edita um Ativo no Banco.
+function* editAtivo(action) {
+    try {
+        
+        const ativo = {id: action.ativo.key, ...action.ativo};
+        delete ativo.key;
+        
+        yield call(enviaEditAtivo,ativo);
+    
+        yield put({
+            type: 'UPDATE_EDIT_ATIVO',
+            ativo
+        })
+    } catch (err) {
+        yield put({
+            type: 'UPDATE_EDIT_ATIVO_FAIL',
+            messsage: err.message
+        })
+    }
+}
+
+//Edita um Passivo no Banco.
+function* editPassivo(action) {
+    try {
+
+        const passivo = {id: action.passivo.key, ...action.passivo};
+        delete passivo.key;
+        
+        yield call(enviaEditPassivo,passivo);
+
+        yield put({
+            type: 'UPDATE_EDIT_PASSIVO',
+            passivo
+        })
+    } catch (err) {
+        yield put({
+            type: 'UPDATE_EDIT_PASSIVO_FAIL',
+            messsage: err.message
+        })
+    }
+}
+
+//Deleta um Passivo do Banco.
+function* deletePassivo(action) {
+    try {
+
+        const passivo = {id: action.passivo.key, ...action.passivo};
+        delete passivo.key;
+        
+        yield call(enviaDeletePassivo, passivo);
+
+        yield put({
+            type: 'DELETA_PASSIVO',
+            passivo,
+            id: action.id
+        })
+    } catch (err) {
+        yield put({
+            type: 'DELETA_PASSIVO_FAIL',
+            message: err.message
+        })
+    }
+}
+
+//Deleta um Ativo do Banco.
+function* deleteAtivo(action) {
+    try {
+        
+        const ativo = {id: action.ativo.key, ...action.ativo};
+        delete ativo.key;
+
+        yield call(enviaDeleteAtivo, ativo);
+
+        yield put({
+            type: 'DELETA_ATIVO',
+            ativo,
+            id: action.id
+        })
+    } catch (err) {
+        yield put({
+            type: 'DELETA_ATIVO_FAIL',
+            message: err.message
+        })
+    }
+}
+
+//Carrega Dados das Tabelas Ativos
 function* carregaAtivos() {
     try {
-        console.log('sagaLoadAtivos');
         const ativos = yield call(buscaAtivos);
 
         yield put({
@@ -90,9 +236,9 @@ function* carregaAtivos() {
     }
 }
 
+//Carrega Dados das Tabelas Passivos
 function* carregaPassivos() {
     try {
-        console.log('sagaLoadPassivos');
         const passivos = yield call(buscaPassivos);
 
         yield put({
@@ -108,13 +254,12 @@ function* carregaPassivos() {
 }
 
 export default function* mySaga() {
-    yield takeEvery('ASYNC_DELETE_ACTIVE', asyncDeleteActive);
-    yield takeEvery('ASYNC_EDIT_ACTIVE', asyncEditActive);
-    yield takeEvery('ASYNC_SAVE_ACTIVE', asyncSaveActive);
-    yield takeEvery('ASYNC_DELETE_PASSIVE', asyncDeletePassive);
-    yield takeEvery('ASYNC_EDIT_PASSIVE', asyncEditPassive);
-    yield takeEvery('ASYNC_SAVE_PASSIVE', asyncSavePassive);
     yield takeLatest('LOAD_ATIVOS', carregaAtivos);
     yield takeLatest('LOAD_PASSIVOS', carregaPassivos);
-
+    yield takeLatest('SAVE_ATIVO', saveAtivo);
+    yield takeLatest('SAVE_PASSIVO', savePassivo);
+    yield takeLatest('EDIT_ATIVO', editAtivo);
+    yield takeLatest('EDIT_PASSIVO', editPassivo);
+    yield takeLatest('DELETE_PASSIVO', deletePassivo);
+    yield takeLatest('DELETE_ATIVO', deleteAtivo);
 }

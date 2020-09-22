@@ -18,7 +18,7 @@ function Passivos({ estado }) {
         <>
             <div>
                 {editing ? (
-                    <FormEditar tipo="Passivo" />    
+                    <FormEditar tipo="Passivo" editando={editing}/>    
                 ):(
                     <CadastroForm tipo="Passivo" />
                 )}

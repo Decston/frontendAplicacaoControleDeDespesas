@@ -1,31 +1,43 @@
 export function editarPassivo(passivo, id) {
-    console.log('1 - editPassivoAction');
     return {
-        type: 'ASYNC_EDIT_PASSIVE',
+        type: 'EDIT_PASSIVE',
         passivo,
         id
     };
 }
 
-export function deletarPassivo(passivo) {
-    console.log('1 - deletePassivoAction');
+export function deletarPassivo(passivo, id) {
     return {
-        type: 'ASYNC_DELETE_PASSIVE',
-        passivo
+        type: 'DELETE_PASSIVO',
+        passivo,
+        id
     }
 }
 
-export function salvarPassivo(passivo) {
-    console.log("1 - savePassivoAction");
+export function salvarPassivo(passivo, editing) {
     return {
-        type: 'ASYNC_SAVE_PASSIVE',
-        passivo
+        type: 'SAVE_PASSIVO',
+        passivo,
+        editing
     }
 }
 
 export function loadPassivos(){
-    console.log('actionLoadPassivos');
     return {
         type: 'LOAD_PASSIVOS',
     }
 } 
+
+export function editPassivo(passivo, id) {
+    return {
+        type: 'EDIT_PASSIVO',
+        passivo,
+        id
+    }
+}
+
+export function cancelEditPassivo() {
+    return {
+        type: 'CANCELAR_PASSIVO'
+    }
+}

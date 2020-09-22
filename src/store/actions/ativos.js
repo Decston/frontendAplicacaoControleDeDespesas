@@ -1,31 +1,43 @@
-export function editarAtivo(ativo,id) {
-    console.log("1 - editAtivoAction");
+export function editarAtivo(ativo, id) {
     return {
-        type: 'ASYNC_EDIT_ACTIVE',
+        type: 'EDIT_ACTIVE',
         ativo,
         id
     };
 }
 
-export function deletarAtivo(gasto) {
-    console.log("1 - deleteAtivoAction");
+export function deletarAtivo(ativo, id) {
     return {
-        type: 'ASYNC_DELETE_ACTIVE',
-        gasto
+        type: 'DELETE_ATIVO',
+        ativo,
+        id
     }
 }
 
-export function salvarAtivo(ativo) {
-    console.log("1 - saveAtivoAction");
+export function salvarAtivo(ativo, editing) {
     return {
-        type: 'ASYNC_SAVE_ACTIVE',
-        ativo
+        type: 'SAVE_ATIVO',
+        ativo,
+        editing
     }
 }
 
 export function loadAtivos(){
-    console.log('actionLoadAtivos');
     return {
         type: 'LOAD_ATIVOS',
     }
 } 
+
+export function editAtivo(ativo, id) {
+    return {
+        type: 'EDIT_ATIVO',
+        ativo,
+        id
+    }
+}
+
+export function cancelEditAtivo() {
+    return {
+        type: 'CANCELAR_ATIVO'
+    }
+}

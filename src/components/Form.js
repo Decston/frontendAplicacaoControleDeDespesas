@@ -24,13 +24,18 @@ const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
 
     function onSubmit(event) {
         event.preventDefault();
-            
+   
         if(tipo === 'Ativo') {
             salvarAtivo(values);
-        }else{
+        } else if (tipo === 'Passivo') {
             salvarPassivo(values);
         }
         
+        setValues(initialValue);
+    }
+
+    function cancelar(event) {
+        event.preventDefault();
         setValues(initialValue);
     }
 
@@ -73,6 +78,9 @@ const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
                 </div>
                 <div>
                     <button type="submit">Salvar</button>
+                </div>
+                <div>
+                    <button onClick={cancelar} type="button">Cancelar</button>
                 </div>
             </form>
         </div>

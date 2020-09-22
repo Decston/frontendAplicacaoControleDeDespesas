@@ -1,5 +1,3 @@
-import axios from 'axios';
-
 const INITIAL_STATE = {
     passivos: [],
     passivoEdit: {},
@@ -9,9 +7,7 @@ const INITIAL_STATE = {
 
 export default function passivos( state = INITIAL_STATE, action ) {
     if(action.type === 'EDIT_PASSIVE') {
-        console.log('3 - editPassivoReduce');
-        console.log(action.id);
-        
+
         return {
             ...state,
             idEdit: action.id,
@@ -19,23 +15,9 @@ export default function passivos( state = INITIAL_STATE, action ) {
             editing: true
         }
         
-    } else if(action.type === 'DELETE_PASSIVE') {
+    } else if(action.type === 'DELETA_PASSIVO') {
 
-        console.log('3 - deletePassivoReduce');
-        
-        fetch('http://localhost:8080/api/gasto', {
-            method: 'DELETE',
-            body: JSON.stringify(action.passivo),
-            headers: {
-                'Content-type': 'application/json;' 
-            }
-        })
-        .then (function(response) {
-            return response.ok;
-        })
-
-        let index = state.passivos.indexOf(action.passivo);
-        state.passivos.splice(index, 1); 
+        state.passivos.splice(action.id, 1);
 
         return {
             ...state,
@@ -44,53 +26,41 @@ export default function passivos( state = INITIAL_STATE, action ) {
         }
 
     } else if(action.type === 'SAVE_PASSIVE') {
-        console.log(state.editing);
 
-        if(state.editing === false) {
-
-            console.log('3 - savePassivoReduce');
-
-            axios.post('http://localhost:8080/api/gasto', action.passivo)
-            .then((response) => {
-                
-            });
-
-            const newPassivo = { id: Math.round(Math.random()*100), ...action.passivo};
-            state.passivos.push(newPassivo);
-            
-            return {
-                ...state,
-                passivos: state.passivos,
-            }
-
-        } else {
-
-            console.log('Editando...');
-            console.log(state.idEdit);
-
-            state.passivos.splice(state.idEdit, 1, action.passivo );
-
-            axios.put('http://localhost:8080/api/gasto', action.passivo)
-            .then((response) => {
-                console.log(response.status);    
-            });
-
-            return {
-                ...state,
-                passivos: state.passivos,
-                idEdit: null,
-                editing: false
-            }
-
+        state.passivos.push(action.passivo);
+        
+        return {
+            ...state,
+            passivos: state.passivos,
         }
 
     } else if(action.type === 'LOADED_PASSIVOS') {
-        console.log('reduceLoadPassivos');
 
         return {
             ...state,
             passivos: action.passivos
         }
+
+    } else if(action.type === 'UPDATE_EDIT_PASSIVO') {
+
+        state.passivos.splice(state.idEdit, 1, action.passivo );
+
+        return {
+            ...state,
+            passivos: state.passivos,
+            idEdit: null,
+            editing: false
+        }
+
+    } else if(action.type === 'CANCELAR_PASSIVO') {
+
+        return {
+            ...state,
+            idEdit: null,
+            editing: false,
+            passivoEdit: {}
+        }
+
     }
 
     return state;

@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { connect } from 'react-redux';
-import { salvarAtivo } from '../store/actions/ativos';
-import { salvarPassivo } from '../store/actions/passivos';
+import { salvarAtivo, editAtivo, cancelEditAtivo } from '../store/actions/ativos';
+import { salvarPassivo, editPassivo, cancelEditPassivo } from '../store/actions/passivos';
 
-const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
+const CadastroForm = ({ estado, salvarAtivo, editAtivo, cancelEditAtivo, salvarPassivo, editPassivo, cancelEditPassivo, tipo, editando }) => {
 
     const initialValue = {
         data: '',
@@ -34,13 +34,30 @@ const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
 
     function onSubmit(event) {
         event.preventDefault();
-            
-        if(tipo === 'Ativo') {
+        console.log(tipo, editando);
+
+        if(tipo === 'Ativo' & editando === false) {
             salvarAtivo(values);
-        }else{
+        } else if(tipo === 'Ativo' & editando === true) {
+            editAtivo(values, estado.ativos.idEdit);
+        } else if(tipo === 'Passivo' & editando === false) {
             salvarPassivo(values);
+        } else if(tipo === 'Passivo' & editando === true) {
+            editPassivo(values, estado.passivos.idEdit);
         }
         
+        setValues(initialValue);
+    }
+
+    function cancelar(event) {
+        event.preventDefault();
+
+        if(tipo === 'Ativo') {
+            cancelEditAtivo();
+        } else {
+            cancelEditPassivo();
+        }
+
         setValues(initialValue);
     }
 
@@ -84,6 +101,10 @@ const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
                 <div>
                     <button type="submit">Salvar</button>
                 </div>
+                <br />
+                <div>
+                    <button onClick={cancelar} type="button">Cancelar</button>
+                </div>
             </form>
         </div>
     );
@@ -93,4 +114,4 @@ const mapStateToProps = state => ({
     estado: state
 });
 
-export default connect(mapStateToProps, { salvarAtivo, salvarPassivo })(CadastroForm);
+export default connect(mapStateToProps, { salvarAtivo, editAtivo, cancelEditAtivo, salvarPassivo, editPassivo, cancelEditPassivo })(CadastroForm);
