@@ -1,7 +1,11 @@
 import React, { useState } from 'react';
 import { connect } from 'react-redux';
+import { Divider } from 'antd';
+
 import { salvarAtivo } from '../store/actions/ativos';
 import { salvarPassivo } from '../store/actions/passivos';
+
+import './Form.css';
 
 const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
 
@@ -41,48 +45,40 @@ const CadastroForm = ({ estado, salvarAtivo, salvarPassivo, tipo }) => {
 
     return (
         <div>
-            <h2>Salvar {tipo}</h2>
+            <Divider orientation="left">Salvar {tipo}</Divider>
+            
+            <div className="containerForm">
+                <h3>Preencha os dados:</h3>
 
-            <h3>Preencha os dados:</h3>
-
-            <form onSubmit={onSubmit}>
-                <div className="cadastro-form">
-                    <label htmlFor="data">Data</label>
-                    <br />
-                    <input id="data" name="data" type="text" value={values.data} onChange={onChange}/>
-                </div>
-                <div className="cadastro-form">
-                    <label htmlFor="descricao">Descrição</label>
-                    <br />
-                    <input id="descricao" name="descricao" type="text" value={values.descricao} onChange={onChange}/>
-                </div>
-                <div className="cadastro-form">
-                    <label htmlFor="taxa">Taxa</label>
-                    <br />
-                    <input id="taxa" name="taxa" type="text" value={values.taxa} onChange={onChange}/>
-                </div>
-                <div className="cadastro-form">
-                    <label htmlFor="valor">Valor</label>
-                    <br />
-                    <input id="valor" name="valor" type="number" value={values.valor} onChange={onChange}/>
-                </div>
-                <div className="cadastro-form">
-                    {tipo === 'Ativo' ? <label htmlFor="destino">Destino</label> : <label htmlFor="destino">Fonte</label> }
-                    <br />
-                    <input id="destino" name="destino" type="text" value={values.destino} onChange={onChange}/>
-                </div>
-                <div className="cadastro-form">
-                    <label htmlFor="tipo">Tipo</label>
-                    <br />
-                    <input id="tipo" name="tipo" type="text" defaultValue={values.tipo} readOnly={true}/>
-                </div>
-                <div>
-                    <button type="submit">Salvar</button>
-                </div>
-                <div>
-                    <button onClick={cancelar} type="button">Cancelar</button>
-                </div>
-            </form>
+                <form onSubmit={onSubmit} className="formulario">
+                    <div className="cadastro-form">
+                        <input id="data" name="data" placeholder="Data" type="text" value={values.data} onChange={onChange}/>
+                    </div>
+                    <div className="cadastro-form">
+                        <input id="descricao" name="descricao" placeholder="Descrição" type="text" value={values.descricao} onChange={onChange}/>
+                    </div>
+                    <div className="cadastro-form">
+                        <input id="taxa" name="taxa" placeholder="Taxa" type="text" value={values.taxa} onChange={onChange}/>
+                    </div>
+                    <div className="cadastro-form">
+                        <input id="valor" name="valor" placeholder="Valor" type="number" value={values.valor} onChange={onChange}/>
+                    </div>
+                    <div className="cadastro-form">
+                        {tipo === 'Ativo' ?
+                            <input id="destino" name="destino" placeholder="Destino" type="text" value={values.destino} onChange={onChange}/>
+                        : 
+                            <input id="destino" name="destino" placeholder="Fonte" type="text" value={values.destino} onChange={onChange}/>
+                        }
+                    </div>
+                    <div className="cadastro-form">
+                        <input id="tipo" name="tipo" type="text" defaultValue={values.tipo} readOnly={true}/>
+                    </div>
+                    <div className="container-button">
+                        <div> <button type="submit">Salvar</button> </div>
+                        <div> <button onClick={cancelar} type="button">Cancelar</button> </div>
+                    </div>
+                </form>
+            </div>
         </div>
     );
 };

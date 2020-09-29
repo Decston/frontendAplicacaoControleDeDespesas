@@ -16,7 +16,7 @@ function Ativos({ estado }) {
 
     return(
         <>
-            <div>
+            <div className="containerAtivos">
                 {editing ? (
                     <FormEditar tipo="Ativo" editando={editing} />    
                 ):(

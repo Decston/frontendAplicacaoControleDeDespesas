@@ -1,63 +1,55 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { connect } from 'react-redux';
+import { Divider } from 'antd';
 
-function Home ({ estado }) {
-    const [ativos, setAtivos] = useState([]);
-    const [passivos, setPassivos] = useState([]);
+import {loadAtivos} from '../../store/actions/ativos';
+import {loadPassivos} from '../../store/actions/passivos';
 
-    useEffect(() => {
-        document.title = `Home`;
-        async function buscaGastos() {
-            const response = await fetch('http://localhost:8080/api/gastos');
-            const data = await response.json();
-            const passivos = data.filter(dt => {
-                if (dt.tipo === "Passivo"){
-                    return true;
-                }else{
-                    return false;
-                }
-            })
-            setPassivos(passivos);
-        }
+import './styles.css';
 
-        buscaGastos();
-    }, []);
-
-    estado.passivos.passivos = passivos;
+function Home ({ ativos, passivos, loadAtivos, loadPassivos }) {
+    const [saldoAtivos, setSaldoAtivos] = useState(0);
+    const [saldoPassivos, setSaldoPassivos] = useState(0);
 
     useEffect(() => {
-        async function buscaGastos() {
-            const response = await fetch('http://localhost:8080/api/gastos');
-            const data = await response.json();
-            const ativos = data.filter(dt => {
-                if (dt.tipo === "Ativo"){
-                    return true;
-                }else{
-                    return false;
-                }
-            })
-            setAtivos(ativos);
-        }
+        loadAtivos();
+        loadPassivos();
+    }, [loadAtivos, loadPassivos]);
 
-        buscaGastos();
-    }, []);
+    useEffect(() => {
+        setSaldoAtivos(ativos.reduce((soma, ativo) => ( soma+ativo.valor ), 0));
+    }, [ativos])
 
-    estado.ativos.ativos = ativos;
+    useEffect(() => {
+        setSaldoPassivos(passivos.reduce((soma, passivo) => ( soma+passivo.valor ), 0));
+    }, [passivos])
 
     return(
         <div>
-            <h3>Saldo de Ativos: </h3>
-            <b> {estado.ativos.ativos.reduce((soma, ativo) => ( soma+ativo.valor ), 0)
-            .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
-            <h3>Saldo de Passivos: </h3>
-            <b> {estado.passivos.passivos.reduce((soma, passivo) => ( soma+passivo.valor ), 0)
-            .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
-            <h2>Saldo Restante: </h2>
-            <h2> <b> {((estado.ativos.ativos.reduce((soma, ativo) => ( soma+ativo.valor ), 0))
-            -(estado.passivos.passivos.reduce((soma, passivo) => ( soma+passivo.valor ), 0)))
-            .toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })} </b> </h2>
+            <Divider className='saldo-total' orientation="left">Saldos</Divider>
+            <div className='saldo'>
+                <h3>Saldo de Ativos: </h3>
+                <b> {saldoAtivos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
+                <h3>Saldo de Passivos: </h3>
+                <b> {saldoPassivos.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
+
+                <Divider className='saldo-total' orientation="left">Saldo:</Divider>
+
+                <h2>
+                    {((saldoAtivos-saldoPassivos)>=0) ? ( 
+                        <b className='saldoPositivo'>{(saldoAtivos-saldoPassivos).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
+                    ):(
+                        <b className='saldoNegativo'>{(saldoAtivos-saldoPassivos).toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}</b>
+                    )}
+                </h2>
+            </div>
         </div>
     );
 }
 
-export default connect(state => ({ estado: state }))(Home);
+const mapStateTopProps = state => ({
+    ativos: state.ativos.ativos,
+    passivos: state.passivos.passivos
+});
+
+export default connect(mapStateTopProps,{loadAtivos, loadPassivos})(Home);

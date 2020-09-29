@@ -8,15 +8,14 @@ import store from './store';
 import './App.css';
 
 function App() {
+
   return (
     <div>
       <Provider store={store}>
         <div className="menu">
-          <Link to="/"> Home </Link>
-          -
-          <Link to="/ativos"> Ativos </Link>
-          -
-          <Link to="/passivos"> Passivos </Link>
+          <Link className="link" to="/"> Home </Link>
+          <Link className="link" to="/ativos"> Ativos </Link>
+          <Link className="link" to="/passivos"> Passivos </Link>
         </div>
         <div className="pages">
           {routesConfig.map((value, key) => {

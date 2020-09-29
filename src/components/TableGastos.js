@@ -1,23 +1,21 @@
 import React, { useEffect } from 'react';
 import { connect } from 'react-redux';
-import { Table } from 'antd';
+import { Table, Divider } from 'antd';
 
-import {editarAtivo} from '../store/actions/ativos';
-import {deletarAtivo} from '../store/actions/ativos';
-import {editarPassivo} from '../store/actions/passivos';
-import {deletarPassivo} from '../store/actions/passivos';
-import {loadAtivos} from '../store/actions/ativos';
-import {loadPassivos} from '../store/actions/passivos';
+import {editarAtivo, deletarAtivo, loadAtivos, carregandoAtivos} from '../store/actions/ativos';
+import {editarPassivo, deletarPassivo, loadPassivos, carregandoPassivos} from '../store/actions/passivos';
 
-const TableGastos = ({ estado, tipo, editarAtivo, deletarAtivo, editarPassivo, deletarPassivo, loadAtivos, loadPassivos }) => {
+const TableGastos = ({ estado, tipo, editarAtivo, deletarAtivo, editarPassivo, deletarPassivo, loadAtivos, loadPassivos, carregandoAtivos, carregandoPassivos }) => {
 
     useEffect(() => {
         if(tipo === "Ativos") {
             loadAtivos();
+            carregandoAtivos();
         } else {
             loadPassivos();
+            carregandoPassivos();
         }
-    },[loadAtivos, loadPassivos, tipo]);
+    },[loadAtivos, loadPassivos, carregandoAtivos, carregandoPassivos, tipo]);
 
     let gastos;
     let edit;
@@ -108,8 +106,8 @@ const TableGastos = ({ estado, tipo, editarAtivo, deletarAtivo, editarPassivo, d
 
     return (
         <div>
-            <h2> Tabela de {tipo}</h2>
-            <Table columns={columns} dataSource={data} />
+            <Divider orientation="left">Tabela de {tipo}</Divider>
+            <Table loading={estado.ativos.carregando || estado.passivos.carregando} columns={columns} dataSource={data} />
         </div>
     );
 }
@@ -118,4 +116,4 @@ const mapStateToProps = state => ({
     estado: state
 });
 
-export default connect(mapStateToProps, { editarAtivo , deletarAtivo, editarPassivo, deletarPassivo, loadAtivos, loadPassivos })(TableGastos);
+export default connect(mapStateToProps, { editarAtivo , deletarAtivo, editarPassivo, deletarPassivo, loadAtivos, loadPassivos, carregandoAtivos, carregandoPassivos})(TableGastos);

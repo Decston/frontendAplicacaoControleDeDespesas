@@ -26,7 +26,14 @@ export function loadPassivos(){
     return {
         type: 'LOAD_PASSIVOS',
     }
-} 
+}
+
+export function carregandoPassivos(){
+    return {
+        type: 'CARREGANDO_PASSIVO_TRUE',
+        carregando: true
+    }
+}
 
 export function editPassivo(passivo, id) {
     return {

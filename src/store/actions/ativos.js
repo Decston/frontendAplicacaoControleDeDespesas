@@ -26,7 +26,14 @@ export function loadAtivos(){
     return {
         type: 'LOAD_ATIVOS',
     }
-} 
+}
+
+export function carregandoAtivos(){
+    return {
+        type: 'CARREGANDO_ATIVO_TRUE',
+        carregando: true
+    }
+}
 
 export function editAtivo(ativo, id) {
     return {

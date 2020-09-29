@@ -1,0 +1,23 @@
+.saldo {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    background-color: whitesmoke;
+    margin: auto;
+    width: 250px;
+    padding: 10px;
+    border-radius: 10px;
+    border: solid 1px rgb(231, 231, 231);
+    margin-left: 25px;
+    margin-top: 25px;
+}
+
+.saldoPositivo {
+    color: green;
+    font-weight: normal;
+}
+
+.saldoNegativo {
+    color: red;
+    font-weight: normal;
+}

@@ -2,7 +2,8 @@ const INITIAL_STATE = {
     passivos: [],
     passivoEdit: {},
     editing: false,
-    idEdit: null
+    idEdit: null,
+    carregando: false
 };
 
 export default function passivos( state = INITIAL_STATE, action ) {
@@ -34,11 +35,19 @@ export default function passivos( state = INITIAL_STATE, action ) {
             passivos: state.passivos,
         }
 
+    } else if(action.type === 'CARREGANDO_PASSIVO_TRUE') {
+
+        return {
+            ...state,
+            carregando: true
+        }
+
     } else if(action.type === 'LOADED_PASSIVOS') {
 
         return {
             ...state,
-            passivos: action.passivos
+            passivos: action.passivos,
+            carregando: false
         }
 
     } else if(action.type === 'UPDATE_EDIT_PASSIVO') {

@@ -1,0 +1,26 @@
+.menu {
+    margin: 0;
+    padding: 10px;
+    font-size: 16px;
+    background-color: whitesmoke;
+}
+
+.pages {
+    margin: 0;
+    margin-top: 10px;
+    padding: 0;
+}
+
+.link {
+    color: black;
+    padding: 10px;
+    padding-bottom: 4px;
+    margin-left: 10px;
+    font-family: 'Baloo Tammudu 2', cursive;
+}
+
+.link:hover {
+    background-color: rgba(137, 137, 146, 0.288);
+    color: rgb(119, 119, 119);
+    transition: 0.5s;
+}

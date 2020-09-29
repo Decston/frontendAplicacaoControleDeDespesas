@@ -2,70 +2,68 @@ const INITIAL_STATE = {
     ativos: [],
     ativoEdit: {},
     editing: false,
-    idEdit: null
+    idEdit: null,
+    carregando: false
 };
 
 export default function ativos( state = INITIAL_STATE, action ) {
-    if(action.type === 'EDIT_ACTIVE') {
-        
-        return {
-            ...state,
-            idEdit: action.id,
-            ativoEdit: action.ativo,
-            editing: true
-        }
-
-    } else if(action.type === 'DELETA_ATIVO') {
-
-        state.ativos.splice(action.id, 1);
-
-        return {
-            ...state,
-            ativos: state.ativos,
-            editing: false
-        }
-
-    } else if(action.type === 'SAVE_ACTIVE') {
-        
-        if(state.editing === false) {
-
-            const ativos = [...state.ativos, action.ativo];
-            
+    switch(action.type) {
+        case 'EDIT_ACTIVE':
             return {
                 ...state,
-                ativos
-            }
+                idEdit: action.id,
+                ativoEdit: action.ativo,
+                editing: true
+            };
+        case 'DELETA_ATIVO':
 
-        } 
+            state.ativos.splice(action.id, 1);    
 
-    } else if(action.type === 'LOADED_ATIVOS') {
+            return {
+                ...state,
+                ativos: state.ativos,
+                editing: false
+            };
+        case 'SAVE_ACTIVE':
 
-        return {
-            ...state,
-            ativos: action.ativos
-        }
-        
-    } else if(action.type === 'UPDATE_EDIT_ATIVO') {
+            if(state.editing === false) {
 
-        state.ativos.splice(state.idEdit, 1, action.ativo);
+                const ativos = [...state.ativos, action.ativo];
+                
+                return {
+                    ...state,
+                    ativos
+                }
+    
+            } ;
+        case 'CARREGANDO_ATIVO_TRUE':
+            return {
+                ...state,
+                carregando: true
+            };
+        case 'LOADED_ATIVOS':
+            return {
+                ...state,
+                ativos: action.ativos,
+                carregando: false
+            };
+        case 'UPDATE_EDIT_ATIVO':
+            state.ativos.splice(state.idEdit, 1, action.ativo);
 
-        return {
-            ...state,
-            ativos: state.ativos,
-            idEdit: null,
-            editing: false
-        }
-
-    } else if(action.type === 'CANCELAR_ATIVO') {
-
-        return {
-            ...state,
-            idEdit: null,
-            editing: false,
-            ativoEdit: {}
-        }
-
+            return {
+                ...state,
+                ativos: state.ativos,
+                idEdit: null,
+                editing: false
+            };
+        case 'CANCELAR_ATIVO':
+            return {
+                ...state,
+                idEdit: null,
+                editing: false,
+                ativoEdit: {}
+            };
+        default:
+            return state;
     }
-
-    return state;
 }
